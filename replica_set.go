@@ -55,6 +55,8 @@ type ReplicaSet struct {
 	// not reachable.
 	Addrs string
 
+	HostListen string
+
 	// PortStart and PortEnd define the port range within which proxies will be
 	// allocated.
 	PortStart int
@@ -248,7 +250,11 @@ func (r *ReplicaSet) proxyAddr(l net.Listener) string {
 		panic(err)
 	}
 
-	return fmt.Sprintf("%s:%s", r.proxyHostname(), port)
+	if r.HostListen == "" {
+		return fmt.Sprintf("%s:%s", r.proxyHostname(), port)
+	} else {
+		return fmt.Sprintf("%s:%s", r.HostListen, port)
+	}
 }
 
 func (r *ReplicaSet) proxyHostname() string {
